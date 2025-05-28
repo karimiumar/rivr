@@ -1,5 +1,5 @@
 group = "com.nuecho"
-version = "1.0.13"
+version = "2.0.0"
 
 // Configure the java projects release.
 
@@ -8,27 +8,13 @@ def javaProjects = [project(':rivr-core'), project(':rivr-voicexml')]
 configure(javaProjects) {
     apply plugin: 'java-library'
     apply plugin: 'eclipse'
-    apply plugin: 'checkstyle'
 
-    dependencies {
-        checkstyle 'com.puppycrawl.tools:checkstyle:5.5'
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
     }
-
-    checkstyle.configFile = rootProject.file('checkstyle/checkstyle.xml')
-    sourceCompatibility = '8'
-    targetCompatibility = '8'
-
-    // Fix for "Unable to get class information" message in checkstyle
-    checkstyleMain {
-       classpath += configurations.implementation
-       classpath += configurations.api
-    }
-
-    checkstyleTest {
-        classpath += configurations.implementation
-        classpath += configurations.api
-    }
-
+    
     eclipse {
         project {
             natures 'net.sf.eclipsecs.core.CheckstyleNature'
@@ -164,9 +150,6 @@ task globalJavadoc(type: Javadoc, dependsOn: prepareJavadoc ) {
         group("Rivr Core Packages", "com.nuecho.rivr.core*")
         group("Rivr VoiceXML Packages", "com.nuecho.rivr.voicexml*")
         footer "To report errors, inconsistencies and omissions in the Rivr API documentation, please <a href=\"https://github.com/nuecho/rivr/issues/new\" target=\"_blank\">open an issue</a>."
-        linksOffline "https://docs.oracle.com/javase/6/docs/api/", "${projectDir}/doc/javadoc-extra/package-lists/javase6"
-        linksOffline "https://docs.oracle.com/javaee/6/api/", "${projectDir}/doc/javadoc-extra/package-lists/javaee6"
-        linksOffline "https://www.slf4j.org/api/", "${projectDir}/doc/javadoc-extra/package-lists/slf4j"
         links "https://json-processing-spec.java.net/nonav/releases/1.0/fcs/javadocs/"
         overview = "${projectDir}/doc/javadoc-extra/overview.html"
         docTitle "<a href=\"https://github.com/nuecho/rivr\" target=\"_blank\"><img src=\"rivr-logo.png\" /></a><br/>Rivr $project.version &ndash; API documentation"
